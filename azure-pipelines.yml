@@ -7,7 +7,9 @@ trigger:
 - main
 
 pool:
-  vmImage: ubuntu-latest
+  name: SelfHosted
+  demands:
+  - agent.name -equals ZISHMANSON
 
 variables:
   buildConfiguration: 'Release'
