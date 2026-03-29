@@ -11,9 +11,18 @@ pool:
   demands:
   - agent.name -equals ZISHMANSON
 
-variables:
-  buildConfiguration: 'Release'
-
 steps:
-- script: dotnet build --configuration $(buildConfiguration)
-  displayName: 'dotnet build $(buildConfiguration)'
+- checkout: self
+  clean: true
+
+# Install SonarScanner (if not already installed)
+- script: |
+    dotnet tool install --global dotnet-sonarscanner
+  displayName: "Install SonarScanner"
+
+# Run SonarCloud analysis
+- script: |
+    dotnet-sonarscanner begin /k:"zishmanson_my-first-azure-devops" /o:"zishmanson" /d:sonar.login="$(SONAR_TOKEN)" /d:sonar.host.url="https://sonarcloud.io"
+    dotnet build --configuration Release
+    dotnet-sonarscanner end /d:sonar.login="$(SONAR_TOKEN)"
+  displayName: "Run SonarCloud Analysis"
