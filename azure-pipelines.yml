@@ -15,12 +15,13 @@ steps:
 - checkout: self
   clean: true
 
-# Install SonarScanner (if not already installed)
+# Install SonarScanner (.NET global tool)
 - script: |
     dotnet tool install --global dotnet-sonarscanner
+    echo "##vso[task.prependpath]%USERPROFILE%\.dotnet\tools"
   displayName: "Install SonarScanner"
 
-# Run SonarCloud analysis
+# Run SonarCloud analysis using CLI (works in all regions)
 - script: |
     dotnet-sonarscanner begin /k:"zishmanson_my-first-azure-devops" /o:"zishmanson" /d:sonar.login="$(SONAR_TOKEN)" /d:sonar.host.url="https://sonarcloud.io"
     dotnet build --configuration Release
